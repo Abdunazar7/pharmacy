@@ -5,6 +5,10 @@ import { RegionModule } from './region/region.module';
 import { DistrictModule } from './district/district.module';
 import { MedicineTypeModule } from './medicine_type/medicine_type.module';
 import { MedicineModule } from './medicine/medicine.module';
+import { Medicine } from './medicine/models/medicine.model';
+import { Region } from './region/models/region.model';
+import { District } from './district/models/district.model';
+import { MedicineType } from './medicine_type/models/medicine_type.model';
 
 @Module({
   imports: [ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
@@ -15,7 +19,7 @@ import { MedicineModule } from './medicine/medicine.module';
       username: process.env.PG_USER,
       password: process.env.PG_PASSWORD,
       database: process.env.PG_DATABASE,
-      models: [],
+      models: [Medicine, Region, District, MedicineType],
       autoLoadModels: true,
       logging: true,
       sync: { alter: true },

@@ -1,1 +1,3 @@
-export class CreateMedicineTypeDto {}
+export class CreateMedicineTypeDto {
+  name: string;
+}
