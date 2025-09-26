@@ -5,23 +5,22 @@ import {
   Model,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from "sequelize-typescript";
 import { MedicineType } from "../../medicine_type/models/medicine_type.model";
+import { Stock } from "../../stock/models/stock.model";
 
 export interface MedicineCreationAttributes {
   name: string;
   manufacturer: string;
-  medicine_type_id: number;
+  medicine_typeId: number;
   price: number;
   expiry_date: Date;
   info: string;
 }
 
 @Table({ tableName: "medicines", timestamps: false })
-export class Medicine extends Model<
-  Medicine,
-  MedicineCreationAttributes
-> {
+export class Medicine extends Model<Medicine, MedicineCreationAttributes> {
   @Column({ type: DataType.INTEGER, autoIncrement: true, primaryKey: true })
   declare id: number;
 
@@ -32,8 +31,8 @@ export class Medicine extends Model<
   declare manufacturer: string;
 
   @ForeignKey(() => MedicineType)
-  @Column({ type: DataType.BIGINT, allowNull: false })
-  declare medicine_type_id: number;
+  @Column({ type: DataType.BIGINT, allowNull: false, onDelete: "CASCADE" })
+  declare medicine_typeId: number;
 
   @BelongsTo(() => MedicineType)
   declare medicineType: MedicineType;
@@ -46,4 +45,7 @@ export class Medicine extends Model<
 
   @Column({ type: DataType.TEXT, allowNull: false })
   declare info: string;
+
+  @HasMany(() => Stock)
+  stocks: Stock[];
 }

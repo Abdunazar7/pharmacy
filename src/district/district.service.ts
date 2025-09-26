@@ -3,16 +3,22 @@ import { InjectModel } from "@nestjs/sequelize";
 import { District } from "./models/district.model";
 import { CreateDistrictDto } from "./dto/create-district.dto";
 import { UpdateDistrictDto } from "./dto/update-district.dto";
+import { Region } from "../region/models/region.model";
 
 @Injectable()
 export class DistrictService {
   constructor(
-    @InjectModel(District) private readonly districtModel: typeof District
+    @InjectModel(District) private readonly districtModel: typeof District,
+    @InjectModel(Region) private readonly regionModel: typeof Region
   ) {}
 
   async create(createDistrictDto: CreateDistrictDto): Promise<District> {
-    const newDistrict = await this.districtModel.create(createDistrictDto);
-    return newDistrict;
+    const { regionId } = createDistrictDto;
+    const region = await this.regionModel.findByPk(regionId);
+    if (!region)
+      throw new NotFoundException(`Region ${regionId} does not exist`);
+
+    return this.districtModel.create(createDistrictDto);
   }
 
   findAll() {
@@ -23,7 +29,7 @@ export class DistrictService {
     const district = await this.districtModel.findByPk(id, {
       include: { all: true },
     });
-    if (!district) throw new NotFoundException(`District ${id} not found`);
+    if (!district) return { message: `District ${id} not found` };
     return district;
   }
 
@@ -36,8 +42,8 @@ export class DistrictService {
   }
 
   async remove(id: number) {
-    const district = await this.findOne(id);
-    await district.destroy();
-    return { message: "District deleted", id };
+    const delCount = await this.districtModel.destroy({ where: { id } });
+    if (delCount === 0) return { message: "No district found to delete." };
+    return { message: "District deleted successfully.", id };
   }
 }

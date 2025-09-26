@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { Region } from "./models/region.model";
 import { CreateRegionDto } from "./dto/create-region.dto";
@@ -10,9 +10,8 @@ export class RegionService {
     @InjectModel(Region) private readonly regionModel: typeof Region
   ) {}
 
-  async create(createRegionDto: CreateRegionDto): Promise<Region> {
-    const newRegion = await this.regionModel.create(createRegionDto);
-    return newRegion;
+  create(createRegionDto: CreateRegionDto) {
+    return this.regionModel.create(createRegionDto);
   }
 
   findAll() {
@@ -23,7 +22,7 @@ export class RegionService {
     const region = await this.regionModel.findByPk(id, {
       include: { all: true },
     });
-    if (!region) throw new NotFoundException(`Region ${id} not found`);
+    if (!region) return { message: `Region ${id} not found` };
     return region;
   }
 
@@ -36,8 +35,8 @@ export class RegionService {
   }
 
   async remove(id: number) {
-    const region = await this.findOne(id);
-    await region.destroy();
-    return { message: "Region deleted", id };
+    const delCount = await this.regionModel.destroy({ where: { id } });
+    if (delCount === 0) return { message: "No region found to delete." };
+    return { message: "Region deleted successfully.", id };
   }
 }

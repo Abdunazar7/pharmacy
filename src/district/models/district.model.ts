@@ -5,19 +5,18 @@ import {
   Model,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from "sequelize-typescript";
 import { Region } from "../../region/models/region.model";
+import { Pharmacy } from "../../pharmacies/models/pharmacy.model";
 
 export interface DistrictCreationAttributes {
   name: string;
-  region_id: number;
+  regionId: number;
 }
 
 @Table({ tableName: "district", freezeTableName: true })
-export class District extends Model<
-  District,
-  DistrictCreationAttributes
-> {
+export class District extends Model<District, DistrictCreationAttributes> {
   @Column({ type: DataType.INTEGER, autoIncrement: true, primaryKey: true })
   declare id: number;
 
@@ -25,9 +24,12 @@ export class District extends Model<
   declare name: string;
 
   @ForeignKey(() => Region)
-  @Column({ type: DataType.BIGINT, allowNull: false })
-  declare region_id: number;
+  @Column({ type: DataType.BIGINT, allowNull: false, onDelete: "CASCADE" })
+  declare regionId: number;
 
   @BelongsTo(() => Region)
-  declare region: Region;
+  region: Region;
+
+  @HasMany(() => Pharmacy)
+  pharmacies: Pharmacy[];
 }
