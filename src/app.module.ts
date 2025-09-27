@@ -13,6 +13,8 @@ import { PharmaciesModule } from './pharmacies/pharmacies.module';
 import { StockModule } from './stock/stock.module';
 import { Pharmacy } from './pharmacies/models/pharmacy.model';
 import { Stock } from './stock/models/stock.model';
+import { AdminModule } from './admin/admin.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
@@ -34,6 +36,8 @@ import { Stock } from './stock/models/stock.model';
     MedicineModule,
     PharmaciesModule,
     StockModule,
+    AdminModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
