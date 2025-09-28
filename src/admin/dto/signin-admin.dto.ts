@@ -1,10 +1,7 @@
 import { IsEmail } from "class-validator";
 
-export class CreateAdminDto {
-  name: string;
-
+export class SignInAdminDto {
   @IsEmail()
   email: string;
   password: string;
-  value: string;
 }
